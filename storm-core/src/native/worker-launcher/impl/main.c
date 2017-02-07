@@ -113,10 +113,18 @@ int main(int argc, char **argv) {
   }
 
   set_launcher_uid(getuid(), group_info->gr_gid);
-  // if we are running from a setuid executable, make the real uid root
-  setuid(0);
-  // set the real and effective group id to the node manager group
-  setgid(group_info->gr_gid);
+
+  // make the real uid root
+  if (setuid(0) != 0) {
+    fprintf(ERRORFILE, "Can't change UID to root: %s.\n", strerror(errno));
+    return SETUID_OPER_FAILED;
+  }
+  // set the real and effective group id to the specified group
+  if (setgid(group_info->gr_gid) != 0) {
+    fprintf(ERRORFILE, "Can't change GID to %u: %s.\n", group_info->gr_gid,
+            strerror(errno));
+    return SETGID_OPER_FAILED;
+  }
 
   if (check_executor_permissions(executable_file) != 0) {
     fprintf(ERRORFILE, "Invalid permissions on worker-launcher binary.\n");

@@ -96,19 +96,11 @@ int check_executor_permissions(char *executable_file) {
     return -1;
   }
 
-  uid_t binary_euid = filestat.st_uid; // Binary's user owner
   gid_t binary_gid = filestat.st_gid; // Binary's group owner
 
-  // Effective uid should be root
-  if (binary_euid != 0) {
-    fprintf(LOGFILE,
-        "The worker-launcher binary should be user-owned by root.\n");
-    return -1;
-  }
-
   if (binary_gid != getgid()) {
-    fprintf(LOGFILE, "The configured nodemanager group %d is different from"
-            " the group of the executable %d\n", getgid(), binary_gid);
+    fprintf(LOGFILE, "The configured group %u is different from"
+            " the group of the executable %u\n", getgid(), binary_gid);
     return -1;
   }
 
@@ -118,12 +110,6 @@ int check_executor_permissions(char *executable_file) {
     fprintf(LOGFILE,
             "The worker-launcher binary should not have read or write or"
             " execute for others.\n");
-    return -1;
-  }
-
-  // Binary should be setuid/setgid executable
-  if ((filestat.st_mode & S_ISUID) == 0) {
-    fprintf(LOGFILE, "The worker-launcher binary should be set setuid.\n");
     return -1;
   }
 
