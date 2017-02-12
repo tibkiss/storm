@@ -533,6 +533,7 @@ Only settings mentioned in **bold** are required.
 |hdfsspout.max.outstanding     |   10000     | Limits the number of unACKed tuples by pausing tuple generation (if ACKers are used in the topology) |
 |hdfsspout.lock.timeout.sec    |  5 minutes  | Duration of inactivity after which a lock file is considered to be abandoned and ready for another spout to take ownership |
 |hdfsspout.clocks.insync       |    true     | Indicates whether clocks on the storm machines are in sync (using services like NTP). Used for detecting stale locks. |
+|hdfsspout.inotify.enabled     |    false    | Enables inotify based watch dir monitoring if set to "true". Note: **root privileges are needed** on HDFS to use inotify |
 |hdfs.config (unless changed)  |             | Set it to a Map of Key/value pairs indicating the HDFS settigns to be used. For example, keytab and principle could be set using this. See section **Using keytabs on all worker hosts** under HDFS bolt below.| 
 
 ---
